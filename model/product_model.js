@@ -14,7 +14,16 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    hinhanh: String,
+    hinhanh: {
+        public_id: {
+            type: String,
+            required: true
+        },
+        url: {
+            type: String,
+            required: true
+        }
+    },
     chienluoc: Number,
     motasanpham: String,
     thongsokythuat: String,
