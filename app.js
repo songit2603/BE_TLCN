@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const productRoute = require('./routes/product')
 const categoryRoute = require('./routes/category')
+const warrantyRoute = require('./routes/warranty')
 const app = express();
 const port = 4000;
 
@@ -15,7 +16,7 @@ app.use(bodyParser.json());
 
 app.use('/product',productRoute)
 app.use('/category',categoryRoute)
-
+app.use('/warranty',warrantyRoute)
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

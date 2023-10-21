@@ -1,11 +1,12 @@
 const Product = require('../model/product_model');
 const Category = require('../model/category_model');
+const Warranty = require('../model/warranty_model')
 const cloudinary = require('../utils/cloundinary')
 
 
 // Hàm xử lý tạo sản phẩm
 const createProduct = async (req, res) => {
-    const { tensanpham, tensanpham_slug, soluong, dongia, chienluoc, motasanpham, thongsokythuat, linkrv, categoryId } = req.body;
+    const { tensanpham, tensanpham_slug, soluong, dongia, chienluoc, motasanpham, thongsokythuat, linkrv, categoryId, warrantyId } = req.body;
     const hinhanh = req.file.path;
     try {
         const result = await cloudinary.uploader.upload(hinhanh, {
@@ -25,7 +26,8 @@ const createProduct = async (req, res) => {
             motasanpham, 
             thongsokythuat, 
             linkrv, 
-            category: categoryId 
+            category: categoryId,
+            warranty: warrantyId
         });
         product.created_at = new Date();
         product.updated_at = new Date();
@@ -34,7 +36,9 @@ const createProduct = async (req, res) => {
         const category = await Category.findById(categoryId);
         category.products.push(product);
         await category.save();
-
+        const warranty = await Warranty.findById(warrantyId)
+        warranty.products.push(product);
+        await warranty.save();
         res.status(201).json(product);
     } catch (error) {
         console.error(error.stack);
@@ -44,7 +48,9 @@ const createProduct = async (req, res) => {
 
 // Hàm xử lý lấy tất cả sản phẩm
 const getProducts = async (req, res) => {
-    const products = await Product.find().populate('category');
+    const products = await Product.find().populate('category')
+                                        .populate('warranty');
+    
     res.json(products);
 };
 const deleteImageFromCloudinary = async (publicId) => {
@@ -100,6 +106,14 @@ const deleteProduct = async (req, res) => {
         if (category) {
             category.products.pull(productId);
             await category.save();
+        }
+        const warrantyId = product.warranty;
+
+        // Xóa sản phẩm khỏi danh sách sản phẩm (products) của danh mục
+        const warranty = await Warranty.findById(warrantyId);
+        if (warranty) {
+            warranty.products.pull(productId);
+            await warranty.save();
         }
 
         res.json({ message: 'Sản phẩm đã bị xóa' });

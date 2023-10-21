@@ -37,6 +37,10 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
     },
+    warranty: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Warranty',
+    },
 });
 
 const Product = mongoose.model('Product', productSchema);
