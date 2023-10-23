@@ -54,6 +54,7 @@ const deleteWarranty = async (req, res) => {
         res.status(500).json({ error: 'Lỗi server' });
     }
 };
+
 const getWarrantyById = async (req,res) => {
     const warrantyId = req.params.id;
 
